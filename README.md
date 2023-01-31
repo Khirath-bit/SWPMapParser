@@ -2,7 +2,8 @@
 
 Das Tool parsed Map Daten vom json Format von https://doc.mapeditor.org/en/stable/reference/json-map-format/ in ein Format was für das SWP nutzbar ist.
 
-Nachdem eine Map mit dem Tileset erstellt wurde einfach File -> Export As -> .json
+Über "Upload File" eine Json Mapfile hochladen, also als json Exportierte Map in Tiled.
+Dann einen Namen geben und schon kann die Map wieder runtergeladen werden im geparstem Format.
 
 ```
 
