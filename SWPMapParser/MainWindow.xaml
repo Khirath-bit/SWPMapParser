@@ -7,7 +7,7 @@
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:SWPMapParser"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Dialog:DialogParticipation.Register="{Binding}">
+        Title="SWT Map Parser" Height="450" Width="800" Dialog:DialogParticipation.Register="{Binding}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
