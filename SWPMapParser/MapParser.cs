@@ -1,13 +1,8 @@
 ﻿using Newtonsoft.Json;
 using SWPMapParser.Destination;
 using SWPMapParser.Source;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Animation;
 
 namespace SWPMapParser
 {
@@ -46,7 +41,7 @@ namespace SWPMapParser
                         if (tileEntries[x * map.Width + y].Type is TileEntryType.LaserBeam or <0)
                             continue;
 
-                        map.Tiles[x * map.Width + y].TileEntries.Add(tileEntries[x * map.Width + y]);
+                        map.Tiles[x * map.Width + y].TileEntities.Add(tileEntries[x * map.Width + y]);
                     }
                 }
             }
@@ -54,10 +49,10 @@ namespace SWPMapParser
             return map;
         }
 
-        private static List<TileEntry> Magic(uint[] data)
+        private static List<TileEntity> Magic(uint[] data)
         {
 
-            var tiles = new List<TileEntry>();
+            var tiles = new List<TileEntity>();
 
             for (uint i = 0; i < data.Length; i++)
             {
@@ -76,7 +71,7 @@ namespace SWPMapParser
                                     ROTATED_HEXAGONAL_120_FLAG);
 
                 // Resolve the tile
-                tiles.Add(new TileEntry
+                tiles.Add(new TileEntity
                 {
                     Type = (TileEntryType)(global_tile_id - (1 + 0)), //0 first id in tileset, has to be changed if the first id is a different one
                     Orientation = ResolveOrientation(flipped_horizontally, flipped_vertically, flipped_diagonally)

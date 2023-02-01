@@ -1,6 +1,6 @@
 ﻿namespace SWPMapParser.Destination
 {
-    internal class TileEntry
+    internal class TileEntity
     {
         public TileEntryType Type { get; set; }
         public Orientation Orientation { get; set; }

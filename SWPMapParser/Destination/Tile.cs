@@ -12,6 +12,6 @@ namespace SWPMapParser.Destination
 
         public int Y { get; set; }
 
-        public List<TileEntry> TileEntries { get; set; } = new List<TileEntry>();
+        public List<TileEntity> TileEntities { get; set; } = new List<TileEntity>();
     }
 }
