@@ -2,7 +2,10 @@
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using SWPMapParser.Destination;
+using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Utility.MVVM;
@@ -13,7 +16,7 @@ namespace SWPMapParser
     {
         private readonly IDialogCoordinator _instance;
 
-        private Map _map; //Last parsed map
+        private List<Map> _maps = new(); //Last parsed maps
 
         private bool _downloadButtonEnabled;
 
@@ -31,7 +34,7 @@ namespace SWPMapParser
 
         public ICommand UploadMapCommand => new DelegateCommand(UploadMap);
 
-        public ICommand DownloadMapCommand => new DelegateCommand(DownloadMap);
+        public ICommand DownloadMapCommand => new DelegateCommand(DownloadMaps);
 
 
         private async void UploadMap()
@@ -46,7 +49,7 @@ namespace SWPMapParser
 
                 var mapName = await _instance.ShowInputAsync(this, "Map Name", "Input the maps name");
 
-                _map = MapParser.Parse(mapName, dialog.FileName);
+                _maps = new List<Map> { MapParser.Parse(mapName, dialog.FileName) };
 
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
@@ -57,17 +60,49 @@ namespace SWPMapParser
             }
         }
 
-        private void DownloadMap()
+        public async void UploadMap(List<string> maps)
         {
+            var progress = await _instance.ShowProgressAsync(this, "Create Map", "The map is currently under process");
+
+            _maps.Clear();
+
+            foreach(var map in maps)
+            {
+                var mapName = await _instance.ShowInputAsync(this, "Map Name", $"Input the maps name for file '{map}'",
+                    new MetroDialogSettings { DefaultText = map.Split("\\").Last().Split(".").First()});
+
+                _maps.Add(MapParser.Parse(mapName, map));
+            }
+
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                DownloadButtonEnabled = true;
+            });
+
+            await progress.CloseAsync();
+        }
+
+        private void DownloadMaps()
+        {
+            if (Directory.Exists("maps"))
+                Directory.Delete("maps");
+
+            Directory.CreateDirectory("maps");
+
             var dialog = new SaveFileDialog();
-            dialog.Filter = "Maps (*.json)|*.json";
-            dialog.FileName = _map.Name + ".json";
+            dialog.Filter = "Maps (*.zip)|*.zip";
+            dialog.FileName = "maps.zip";
 
             if(dialog.ShowDialog() == true)
             {
-                File.WriteAllText(dialog.FileName, JsonConvert.SerializeObject(_map));
+                foreach(var map in _maps)
+                {
+                    File.WriteAllText($"maps/{map.Name}.json", JsonConvert.SerializeObject(map));
+                }
 
-                _instance.ShowMessageAsync(this, "Saved!", "Map was saved in " + dialog.FileName);
+                ZipFile.CreateFromDirectory("maps", dialog.FileName);
+
+                _instance.ShowMessageAsync(this, "Saved!", "Maps were saved in " + dialog.FileName);
             }
         }
     }

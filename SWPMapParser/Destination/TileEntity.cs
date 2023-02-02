@@ -8,11 +8,12 @@
 
     internal enum Orientation
     {
-        LeftToRight,
-        RightToLeft,
-        TopToBottom,
-        BottomToTop
+        NORTH,
+        EAST,
+        SOUTH,
+        WEST
     }
+    
 
     internal enum TileEntryType
     {

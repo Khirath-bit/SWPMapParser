@@ -38,10 +38,11 @@ namespace SWPMapParser
                 {
                     for (int y = 0; y < map.Height; y++)
                     {
-                        if (tileEntries[x * map.Width + y].Type is TileEntryType.LaserBeam or <0)
+                        if (tileEntries[x * map.Width + y].Type is TileEntryType.LaserBeam or < 0)
                             continue;
 
                         map.Tiles[x * map.Width + y].TileEntities.Add(tileEntries[x * map.Width + y]);
+                        //WALLS ARE DEFAULT SOUTH!!!!
                     }
                 }
             }
@@ -70,11 +71,13 @@ namespace SWPMapParser
                                     FLIPPED_DIAGONALLY_FLAG |
                                     ROTATED_HEXAGONAL_120_FLAG);
 
+                var type = (TileEntryType)(global_tile_id - (1 + 0)); //0 first id in tileset, has to be changed if the first id is a different one
+
                 // Resolve the tile
                 tiles.Add(new TileEntity
                 {
-                    Type = (TileEntryType)(global_tile_id - (1 + 0)), //0 first id in tileset, has to be changed if the first id is a different one
-                    Orientation = ResolveOrientation(flipped_horizontally, flipped_vertically, flipped_diagonally)
+                    Type = type, 
+                    Orientation = (Orientation)ResolveOrientation(flipped_horizontally, flipped_vertically, flipped_diagonally, type)
                 });
             }
 
@@ -84,23 +87,30 @@ namespace SWPMapParser
         /// <summary>
         /// Idk, found out through trial and error
         /// </summary>
-        private static Orientation ResolveOrientation(bool flipped_horizontally, bool flipped_vertically, bool flipped_diagonally)
+        private static int ResolveOrientation(bool flipped_horizontally, bool flipped_vertically, bool flipped_diagonally, TileEntryType type)
         {
+            var wallOffset = 0;
+
+            if(type == TileEntryType.Wand)
+            {
+                wallOffset = 2;
+            }
+
             if (flipped_horizontally && flipped_vertically)
             {
-                return Orientation.TopToBottom;
+                return (int)(Orientation.SOUTH + wallOffset) % 4;
             }
             else if (flipped_horizontally && flipped_diagonally)
             {
-                return Orientation.LeftToRight;
+                return (int)(Orientation.EAST + wallOffset) % 4;
             }
             else if (flipped_vertically && flipped_diagonally)
             {
-                return Orientation.RightToLeft;
+                return (int)(Orientation.WEST + wallOffset) % 4;
             }
 
 
-            return Orientation.BottomToTop;
+            return (int)(Orientation.NORTH + wallOffset) % 4;
         }
     }
 }
