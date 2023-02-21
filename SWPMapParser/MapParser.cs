@@ -22,13 +22,13 @@ namespace SWPMapParser
 
             var sourceMap = JsonConvert.DeserializeObject<SourceMap>(File.ReadAllText(file));
 
-            map.Width = sourceMap.Width;
-            map.Height = sourceMap.Height;
+            map.Height = sourceMap.Width;
+            map.Width = sourceMap.Height;
 
             //Init tiles
             for (int x = 0; x < map.Width; x++)
                 for (int y = 0; y < map.Height; y++)
-                    map.Tiles.Add(new Tile { X = x, Y = y });
+                    map.Tiles.Add(new Tile { X = y, Y = x });
 
             foreach (var layer in sourceMap.Layers)
             {
@@ -38,10 +38,10 @@ namespace SWPMapParser
                 {
                     for (int y = 0; y < map.Height; y++)
                     {
-                        if (tileEntries[x * map.Width + y].Type is TileEntryType.LaserBeam or < 0)
+                        if (tileEntries[(map.Width - 1 - x) * map.Width + y].Type is TileEntryType.LaserBeam or < 0)
                             continue;
 
-                        map.Tiles[x * map.Width + y].TileEntities.Add(tileEntries[x * map.Width + y]);
+                        map.Tiles[x * map.Width + y].TileEntities.Add(tileEntries[(map.Width - 1 - x) * map.Width + y]);
                         //WALLS ARE DEFAULT SOUTH!!!!
                     }
                 }
