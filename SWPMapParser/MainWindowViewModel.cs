@@ -85,7 +85,7 @@ namespace SWPMapParser
         private void DownloadMaps()
         {
             if (Directory.Exists("maps"))
-                Directory.Delete("maps");
+                Directory.Delete("maps", true);
 
             Directory.CreateDirectory("maps");
 
