@@ -48,6 +48,8 @@
         SchieberPhase3,
         SchieberPhase2und4,
         SchieberPhase1und3und5,
-        Wand
+        Wand,
+        DoubleLaserBeam, //VERYYYY IMPORTANT!!! These tile entities have to be deleted, was just for map creation
+        TripleLaserBeam //VERYYYY IMPORTANT!!! These tile entities have to be deleted, was just for map creation
     }
 }

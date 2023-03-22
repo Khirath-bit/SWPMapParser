@@ -38,7 +38,7 @@ namespace SWPMapParser
                 {
                     for (int y = 0; y < map.Height; y++)
                     {
-                        if (tileEntries[(map.Width - 1 - x) * map.Width + y].Type is TileEntryType.LaserBeam or < 0)
+                        if (tileEntries[(map.Width - 1 - x) * map.Width + y].Type < 0)
                             continue;
 
                         map.Tiles[x * map.Width + y].TileEntities.Add(tileEntries[(map.Width - 1 - x) * map.Width + y]);
